@@ -1,0 +1,16 @@
+{
+  "date": "2024-08-08",
+  "comodity": "Oil Hai bhai",
+  "quantity": 100,
+  "buyer": "BuyerKoiHoga",
+  "brate": 500.75,
+  "bnature": "Tn10",
+  "bamount": 50750,
+  "btype": "buyer",
+  "seller": "SellerKoiHoga",
+  "srate": 52,
+  "snature": "Tn10",
+  "samount": 5200,
+  "stype": "Seller",
+  "weigth": 1000.5
+}
