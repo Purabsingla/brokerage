@@ -1,6 +1,9 @@
 import Button from '@mui/material/Button';
 import { useEffect, useState } from 'react';
 import SaudaComponent from './SaudaComponents';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
+import { format } from 'date-fns';
 
 export default function Sauda() {
   //Allocations
@@ -12,8 +15,10 @@ export default function Sauda() {
   const [commonAMNTSeller, setCommonSeller] = useState(0);
   const [weigth, setWeigth] = useState(0);
   const [commodity, setcomodity] = useState('');
-  //getting Qunatity
+  const [AnotherOpen, setAnotherOpen] = useState(false);
+  const [open, setOpen] = useState(false);
 
+  //getting Qunatity
   const [quantity, setQuantity] = useState(0);
 
   //Handling Comission
@@ -77,19 +82,21 @@ export default function Sauda() {
   });
 
   //Events
-  function formatDate(date) {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
+  function handledateChange(event) {
+    let inputValue = event.target.value;
+    if (!/^\d{4}-\d{2}-\d{3}$/.test(inputValue)) {
+      setDate(inputValue);
+    }
   }
+  const date = new Date();
+  const [formattedDate, setDate] = useState(format(date, 'yyyy-MM-dd'));
   useEffect(() => {
     fetch('http://localhost:3001/all')
       .then((response) => response.json())
       .then((data) => {
-        console.log(data.sauda);
+        console.log(data.Sauda);
         setid(
-          !data.sauda === undefined
+          data.Sauda !== undefined
             ? data.Sauda[data.Sauda.length - 1].id + 1
             : 1
         );
@@ -98,8 +105,6 @@ export default function Sauda() {
         setnature(data.Nature);
       });
   }, []);
-  const date = new Date();
-  const formattedDate = formatDate(date);
 
   //Handling AutoComplete ^-^ Buyer
   const handleAutocompleteChange = async (event, newValue) => {
@@ -176,6 +181,21 @@ export default function Sauda() {
     setWeigth(event.target.value);
   };
 
+  //cheking form data is empty or not
+  function checkFormData(formData) {
+    for (const key in formData) {
+      if (
+        key !== 'weigth' &&
+        (formData[key] === undefined || formData[key] === 0)
+      ) {
+        return true;
+      }
+    }
+    if (formData[weigth] === 0 || formData[weigth] !== 0) {
+      return false;
+    }
+  }
+
   //Storing Information
   const handleClick = () => {
     var formData = {
@@ -194,24 +214,36 @@ export default function Sauda() {
       stype: 'S',
       weigth: Number(weigth),
     };
-    console.log(formData);
-    fetch('http://localhost:3001/sauda', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(formData),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.response) {
-          alert('Data Saved Sucessfully');
-        }
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-        alert('Failed to submit the form');
-      });
+    checkFormData(formData)
+      ? setAnotherOpen(true)
+      : fetch('http://localhost:3001/sauda', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.response) {
+              handleClickSauda();
+            }
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+            alert('Failed to submit the form');
+          });
+  };
+  const handleClickSauda = () => {
+    setOpen(true);
+    setComission('');
+    setComissio2('');
+    setQuantity(0);
+  };
+
+  const handleClose = () => {
+    setAnotherOpen(false);
+    setOpen(false);
   };
   return (
     <>
@@ -245,6 +277,8 @@ export default function Sauda() {
         handleWeightChange={handleWeightChange}
         weigth={weigth}
         handleComodity={handleComodity}
+        quantity={quantity}
+        handledatechange={handledateChange}
       />
       <div className="flex justify-center">
         <Button
@@ -256,6 +290,20 @@ export default function Sauda() {
           Save
         </Button>
       </div>
+      <Snackbar open={open} onClose={handleClose} autoHideDuration={4000}>
+        <Alert variant="filled" severity="success">
+          Insert Sucessfully
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        open={AnotherOpen}
+        onClose={handleClose}
+        autoHideDuration={4000}
+      >
+        <Alert variant="filled" severity="error">
+          Please Enter All Values
+        </Alert>
+      </Snackbar>
     </>
   );
 }

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import './App.css';
 import Login from './Logs/Login1';
 import ClippedDrawer from './MenuBar/Menubar';
@@ -17,24 +17,15 @@ import NatureTable from './Tables/NatureTable';
 import ComodityTable from './Tables/ComodityTable';
 import SaudaTable from './Tables/SaudaTable';
 import TotalDalali from './TotalDalali/TotalDalali';
+import TotalDalaliByDate from './TotalDalali/TotalDataliByDate';
+import TotalDalaliFinal from './TotalDalali/TotalDalaliFinal';
+
 function App() {
-  const [ledger, setledger] = useState([]);
-  const [nature, setnature] = useState([]);
-  const [sauda, setsauda] = useState([]);
-  useEffect(() => {
-    fetch('http://localhost:3001/all')
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        setsauda(data.Sauda);
-        setledger(data.Ledger);
-        setnature(data.Nature);
-      });
-  }, []);
   const [Log, SetLog] = useState(false);
   const [open, setOpen] = useState(false);
   const [SaudaData, SetSaudaDate] = useState([]);
   const [SearchData, SetSearchData] = useState([]);
+  const [TD, setTD] = useState(false);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -42,6 +33,10 @@ function App() {
 
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const handleDalaliData = (Data) => {
+    setTD(Data);
   };
 
   const handleData = (Data) => {
@@ -67,17 +62,11 @@ function App() {
               <Route path="/Sauda" element={<Sauda />} />
               <Route
                 path="/LedgerTable"
-                element={<LedgerStationGroupTable initialLedger={ledger} />}
+                element={<LedgerStationGroupTable />}
               />
-              <Route
-                path="/NatureTable"
-                element={<NatureTable initialNature={nature} />}
-              />
+              <Route path="/NatureTable" element={<NatureTable />} />
               <Route path="/ComodityTable" element={<ComodityTable />} />
-              <Route
-                path="/Saudatable"
-                element={<SaudaTable initialSauda={sauda} />}
-              />
+              <Route path="/Saudatable" element={<SaudaTable />} />
               <Route
                 path="/Bill"
                 element={
@@ -98,9 +87,20 @@ function App() {
                   />
                 }
               />
+              <Route path="/TotalDalali" element={<TotalDalali />} />
               <Route
-                path="/TotalDalali"
-                element={<TotalDalali initialSauda={sauda} />}
+                path="/TotalDalali_V2"
+                element={
+                  <TotalDalaliByDate
+                    open={open}
+                    handleClose={handleClose}
+                    handleData={handleDalaliData}
+                  />
+                }
+              />
+              <Route
+                path="/TotalFinalDalali"
+                element={<TotalDalaliFinal gettingData={TD} />}
               />
             </Routes>
           </Box>

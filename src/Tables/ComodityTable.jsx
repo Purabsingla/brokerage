@@ -11,7 +11,6 @@ import { RxFontRoman } from 'react-icons/rx';
 import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
-import Snackbar from '@mui/material/Snackbar';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
@@ -19,6 +18,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 
+import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 
 const columns = [{ id: 'comodity', label: 'Comodity', minWidth: 170 }];
@@ -42,7 +42,7 @@ export default function ComodityTable() {
   };
 
   const handleCloseAlert = () => {
-    setOpen(false);
+    setOpenAlert(false);
     setDeleteAlert(false);
   };
   React.useEffect(() => {
@@ -95,8 +95,6 @@ export default function ComodityTable() {
             );
             setComodity(updatedComo);
             handlealertdelete();
-          } else {
-            alert('invalid operation');
           }
         });
     } catch (error) {
@@ -114,7 +112,6 @@ export default function ComodityTable() {
           } else console.log('Failed as a API');
         });
     } catch (err) {
-      alert('Failed to fetch data');
       console.log(err.message);
     }
   };
@@ -137,12 +134,10 @@ export default function ComodityTable() {
           if (data.response) {
             FetchApi();
             handleClose();
-          } else {
-            alert('Invalid operation');
           }
         });
     } catch (err) {
-      alert('Failed to update');
+      console.log(err.message);
     }
   };
   return (
@@ -249,19 +244,19 @@ export default function ComodityTable() {
         open={openAlert}
         onClose={handleCloseAlert}
         autoHideDuration={6000}
-        message="Update Sucessfully"
-        key={'bottom' + 'left'}
       >
-        <Alert severity="success">Update Sucessfully</Alert>
+        <Alert variant="filled" severity="success">
+          Update Sucessfully
+        </Alert>
       </Snackbar>
       <Snackbar
         open={DeleteAlert}
         onClose={handleCloseAlert}
         autoHideDuration={6000}
-        message="Update Sucessfully"
-        key={'bottom' + 'left'}
       >
-        <Alert severity="success">Delete Sucessfully</Alert>
+        <Alert variant="filled" severity="success">
+          Delete Sucessfully
+        </Alert>
       </Snackbar>
     </>
   );

@@ -11,21 +11,23 @@ import { RxFontRoman } from 'react-icons/rx';
 import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
-
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
+
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 const columns = [
   { id: 'ledger', label: 'Ledger', minWidth: 170 },
   { id: 'station', label: 'Station', minWidth: 170 },
   { id: 'grop', label: 'Group', minWidth: 170 },
 ];
 
-export default function LedgerStationGroupTable({ initialLedger }) {
-  const [ledger, setLedger] = React.useState(initialLedger);
+export default function LedgerStationGroupTable() {
+  const [ledger, setLedger] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [currentRow, setCurrentRow] = React.useState(null);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -35,6 +37,19 @@ export default function LedgerStationGroupTable({ initialLedger }) {
     grop: '',
   });
   const [open, setOpen] = React.useState(false);
+  const [openAlert, setOpenAlert] = React.useState(false);
+  const [DeleteAlert, setDeleteAlert] = React.useState(false);
+
+  React.useEffect(() => {
+    fetch('http://localhost:3001/ledger')
+      .then((response) => response.json())
+      .then((data) => (data.Data ? setLedger(data.Data) : setLedger([])));
+  }, []);
+
+  const handleCloseAlert = () => {
+    setOpenAlert(false);
+    setDeleteAlert(false);
+  };
 
   const handleClickOpen = (row) => {
     setCurrentRow(row);
@@ -85,9 +100,7 @@ export default function LedgerStationGroupTable({ initialLedger }) {
                 )
             );
             setLedger(updatedLedger);
-            alert('Deleted successfully');
-          } else {
-            alert('invalid operation');
+            setDeleteAlert(true);
           }
         });
       const updatedLedger = ledger.filter(
@@ -109,12 +122,11 @@ export default function LedgerStationGroupTable({ initialLedger }) {
         .then((response) => response.json())
         .then((data) => {
           if (data.response) {
-            alert('Data Updated Sucessfully');
+            setOpenAlert(true);
             setLedger(data.Data);
-          } else console.log('Failed as a API');
+          }
         });
     } catch (err) {
-      alert('Failed to fetch data');
       console.log(err.message);
     }
   };
@@ -139,12 +151,10 @@ export default function LedgerStationGroupTable({ initialLedger }) {
           if (data.response) {
             FetchApi();
             handleClose();
-          } else {
-            alert('Invalid operation');
           }
         });
     } catch (err) {
-      alert('Failed to update');
+      console.error(err.message);
     }
   };
   return (
@@ -265,6 +275,22 @@ export default function LedgerStationGroupTable({ initialLedger }) {
           <Button onClick={handleClickUpdate}>Update</Button>
         </DialogActions>
       </Dialog>
+      <Snackbar
+        open={openAlert}
+        onClose={handleCloseAlert}
+        autoHideDuration={3000}
+      >
+        <Alert variant="filled" severity="success">
+          Update Sucessfully
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        open={DeleteAlert}
+        onClose={handleCloseAlert}
+        autoHideDuration={3000}
+      >
+        <Alert severity="success">Delete Sucessfully</Alert>
+      </Snackbar>
     </>
   );
 }

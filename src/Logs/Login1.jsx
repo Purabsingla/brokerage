@@ -11,13 +11,14 @@ const Login = ({ SetLog }) => {
     password: '',
   });
   const [open, setOpen] = useState(false);
-
+  const [close, setClose] = useState(false);
   const handleClick = () => {
     setOpen(true);
   };
 
   const handleClose = () => {
     setOpen(false);
+    setClose(false);
   };
 
   const [openLogin, setOpenLogin] = useState(false);
@@ -33,9 +34,10 @@ const Login = ({ SetLog }) => {
   const handleChange = (event) => {
     setLog({ ...Log, [event.target.name]: event.target.value });
   };
-  const handleclick = () => {
-    console.log(Log);
-    if (Log.user === 'sushil26' && Log.password === '125055') {
+  const handleclick = async () => {
+    if (Log.user === '' || Log.password === '') {
+      setClose(true);
+    } else if (Log.user === 'sushil26' && Log.password === '125055') {
       handleClickLogin();
     } else {
       handleClick();
@@ -86,21 +88,24 @@ const Login = ({ SetLog }) => {
           className="w-screen h-screen bg-cover bg-center bg-no-repeat"
         ></div>
       </div>
-      <Snackbar
-        open={open}
-        onClose={handleClose}
-        autoHideDuration={3000}
-        key={'top' + 'left'}
-      >
-        <Alert severity="error">Invalid UserName and password</Alert>
+      <Snackbar open={open} onClose={handleClose} autoHideDuration={3000}>
+        <Alert variant="filled" severity="warning">
+          Invalid UserName and password
+        </Alert>
       </Snackbar>
       <Snackbar
         open={openLogin}
         onClose={handleCloseLog}
         autoHideDuration={3000}
-        key={'top' + 'left'}
       >
-        <Alert severity="success">Login Sucessfull redirect in 3 second</Alert>
+        <Alert variant="filled" severity="success">
+          Login Sucessfull redirect in 3 second
+        </Alert>
+      </Snackbar>
+      <Snackbar open={close} onClose={handleClose} autoHideDuration={3000}>
+        <Alert variant="filled" severity="error">
+          Enter Username and Password
+        </Alert>
       </Snackbar>
     </>
   );

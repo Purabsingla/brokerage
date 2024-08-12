@@ -11,12 +11,13 @@ import { RxFontRoman } from 'react-icons/rx';
 import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
-
-// import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import Saudaaaa from './UpdateSauda';
+
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 const columns = [
   { id: 'date', label: 'Date', minWidth: 110 },
   { id: 'comodity', label: 'Comodity', minWidth: 150 },
@@ -30,20 +31,34 @@ const columns = [
   { id: 'weigth', label: 'Weigth', minWidth: 80 },
 ];
 
-export default function SaudaTable({ initialSauda }) {
-  const [sauda, setSauda] = React.useState(initialSauda);
+export default function SaudaTable() {
+  const [sauda, setSauda] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [currentRow, setCurrentRow] = React.useState(null);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [updatedSauda, setUpdate] = React.useState({});
   const [open, setOpen] = React.useState(false);
   const [fetchTrigger, setFetchTrigger] = React.useState(false);
+
+  const [openAlert, setOpenAlert] = React.useState(false);
+  const [DeleteAlert, setDeleteAlert] = React.useState(false);
+
+  const handleCloseAlert = () => {
+    setOpenAlert(false);
+    setDeleteAlert(false);
+  };
+
   React.useEffect(() => {
     if (fetchTrigger) {
       handleClickUpdate(); // Call API function
       setFetchTrigger(false); // Reset trigger
     }
   }, [updatedSauda, fetchTrigger]);
+  React.useEffect(() => {
+    fetch('http://localhost:3001/sauda')
+      .then((response) => response.json())
+      .then((data) => (data.Data ? setSauda(data.Data) : setSauda([])));
+  }, []);
   const handleClickOpen = (row) => {
     setCurrentRow(row);
     console.log(currentRow, ' from SaudaTable');
@@ -92,9 +107,7 @@ export default function SaudaTable({ initialSauda }) {
                 )
             );
             setSauda(updatedLedger);
-            alert('Deleted successfully');
-          } else {
-            alert('invalid operation');
+            setDeleteAlert(true);
           }
         });
     } catch (error) {
@@ -107,12 +120,11 @@ export default function SaudaTable({ initialSauda }) {
         .then((response) => response.json())
         .then((data) => {
           if (data.response) {
-            alert('Data Updated Sucessfully');
+            setOpenAlert(true);
             setSauda(data.Data);
           } else console.log('Failed as a API');
         });
     } catch (err) {
-      alert('Failed to fetch data');
       console.log(err.message);
     }
   };
@@ -150,12 +162,10 @@ export default function SaudaTable({ initialSauda }) {
           if (data.response) {
             FetchApi();
             handleClose();
-          } else {
-            alert('Invalid operation');
           }
         });
     } catch (err) {
-      alert('Failed to update');
+      console.log(err.message);
     }
   };
   const FetchData = (value) => {
@@ -264,6 +274,7 @@ export default function SaudaTable({ initialSauda }) {
         <DialogContent>
           {currentRow && (
             <Saudaaaa
+              selectID={currentRow.id}
               handleClose={handleClose}
               FetchData={FetchData}
               CurrentDate={currentRow.date}
@@ -271,6 +282,24 @@ export default function SaudaTable({ initialSauda }) {
           )}
         </DialogContent>
       </Dialog>
+      <Snackbar
+        open={openAlert}
+        onClose={handleCloseAlert}
+        autoHideDuration={6000}
+      >
+        <Alert variant="filled" severity="success">
+          Update Sucessfully
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        open={DeleteAlert}
+        onClose={handleCloseAlert}
+        autoHideDuration={6000}
+      >
+        <Alert variant="filled" severity="success">
+          Delete Sucessfully
+        </Alert>
+      </Snackbar>
     </>
   );
 }

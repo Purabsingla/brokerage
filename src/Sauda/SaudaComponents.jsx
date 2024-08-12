@@ -23,6 +23,8 @@ export default function SaudaComponent({
   handleChange,
   handleChange2,
   handleQunatity,
+  quantity,
+  handledatechange,
   handleAutocompleteChange,
   handleAutocomplete,
   handleAutocompleteNature,
@@ -192,6 +194,7 @@ export default function SaudaComponent({
           label="Date"
           variant="outlined"
           value={formattedDate}
+          onChange={handledatechange}
           sx={{ width: 400, margin: 2 }}
         />
         <TextField
@@ -199,6 +202,7 @@ export default function SaudaComponent({
           label="Quantity"
           variant="outlined"
           type="number"
+          value={quantity}
           sx={{ width: 400, margin: 2 }}
           onChange={handleQunatity}
         />

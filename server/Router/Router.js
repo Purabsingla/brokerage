@@ -10,7 +10,6 @@ router.get('/ledger', async (req, res) => {
   try {
     const query = 'SELECT * FROM LedgerInfo';
     const rows = await show.showdata(query, []);
-    console.log(rows);
     res.send({
       status: 200,
       Data: rows,
@@ -48,7 +47,6 @@ router.get('/comodity', async (req, res) => {
   try {
     const query = 'SELECT * FROM Comodity';
     const rows = await como.fetchdata(query, []);
-    console.log(rows);
     res.send({
       status: 200,
       Data: rows,
@@ -95,7 +93,6 @@ router.get('/all', async (req, res) => {
     const nature1 = await nature.fetchdata(query[2], []);
     const ledger = await show.showdata(query[3], []);
     console.log('Data Fetched Sucessfully');
-    console.log(como1, " is comodity's data from backend side");
     res.send({
       status: 200,
       Sauda: rows,
@@ -123,6 +120,31 @@ router.post('/saudaAll', async (req, res) => {
       res.send({
         status: 200,
         Sauda: Sauda,
+        response: true,
+      });
+    } else {
+      res.send({
+        status: 400,
+        response: false,
+        message: 'Not Found',
+      });
+    }
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+router.post('/saudabydate', async (req, res) => {
+  try {
+    const getData = req.body;
+    console.log(getData);
+    const query = `SELECT * FROM sauda WHERE date BETWEEN '${getData.start_date}' AND '${getData.end_date}'`;
+    console.log(query);
+    const saudaa = await sauda.fetchdata(query, []);
+    console.log('data is comming from Sauda');
+    if (saudaa.length > 0) {
+      res.send({
+        status: 200,
+        Sauda: saudaa,
         response: true,
       });
     } else {

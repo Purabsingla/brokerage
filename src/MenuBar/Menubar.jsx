@@ -19,6 +19,9 @@ export default function ClippedDrawer({ handleClickOpen }) {
   const handleclick = (text) => {
     text === 'Home' ? navigate('/') : navigate('/' + text);
   };
+  const item1 = ['Home', 'Information', 'Sauda'];
+  const item2 = ['LedgerTable', 'NatureTable', 'ComodityTable', 'Saudatable'];
+  const item3 = ['Bill', 'TotalDalali', 'TotalDalali_V2'];
   return (
     <Drawer
       variant="permanent"
@@ -34,9 +37,9 @@ export default function ClippedDrawer({ handleClickOpen }) {
       <Toolbar />
       <Box sx={{ overflow: 'auto' }}>
         <List>
-          {['Home', 'Information', 'Sauda'].map((text, index) => (
+          {item1.map((text, index) => (
             <ListItem key={text} disablePadding>
-              <ListItemButton onClick={() => handleclick(text)}>
+              <ListItemButton key={index} onClick={() => handleclick(text)}>
                 <ListItemIcon>
                   {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
                 </ListItemIcon>
@@ -47,26 +50,28 @@ export default function ClippedDrawer({ handleClickOpen }) {
         </List>
         <Divider />
         <List>
-          {['LedgerTable', 'NatureTable', 'ComodityTable', 'Saudatable'].map(
-            (text, index) => (
-              <ListItem key={text} disablePadding>
-                <ListItemButton onClick={() => handleclick(text)}>
-                  <ListItemIcon>
-                    {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                  </ListItemIcon>
-                  <ListItemText primary={text} />
-                </ListItemButton>
-              </ListItem>
-            )
-          )}
+          {item2.map((text, index) => (
+            <ListItem key={text} disablePadding>
+              <ListItemButton key={index} onClick={() => handleclick(text)}>
+                <ListItemIcon>
+                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                </ListItemIcon>
+                <ListItemText primary={text} />
+              </ListItemButton>
+            </ListItem>
+          ))}
         </List>
         <Divider />
         <List>
-          {['Bill', 'TotalDalali'].map((text, index) => (
+          {item3.map((text, index) => (
             <ListItem key={text} disablePadding>
               <ListItemButton
+                key={index}
                 onClick={() => {
                   if (text === 'Bill') {
+                    handleClickOpen();
+                    handleclick(text);
+                  } else if (text === 'TotalDalali_V2') {
                     handleClickOpen();
                     handleclick(text);
                   } else handleclick(text);

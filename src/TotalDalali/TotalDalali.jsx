@@ -15,7 +15,8 @@ const columns = [
   { id: 'amount', label: 'Amount', minWidth: 170 },
 ];
 
-export default function TotalDalali({ initialSauda }) {
+export default function TotalDalali() {
+  const [SaudaData, setSaudaData] = React.useState([]);
   const [ledger, setData] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -29,6 +30,13 @@ export default function TotalDalali({ initialSauda }) {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
+
+  React.useEffect(() => {
+    fetch('http://localhost:3001/sauda')
+      .then((response) => response.json())
+      .then((data) => (data.Data ? setSaudaData(data.Data) : setSaudaData([])));
+  }, []);
+
   React.useEffect(() => {
     const aggregateAmounts = (data) => {
       const result = {};
@@ -52,10 +60,10 @@ export default function TotalDalali({ initialSauda }) {
         amount: result[party],
       }));
     };
-    let Data = aggregateAmounts(initialSauda);
+    let Data = aggregateAmounts(SaudaData);
     Data && setData(Data);
     setTotal(Data.reduce((acc, curr) => acc + curr.amount, 0));
-  }, [ledger, initialSauda]);
+  }, [ledger, SaudaData]);
   return (
     <>
       <Paper sx={{ width: '100%', overflow: 'hidden' }}>

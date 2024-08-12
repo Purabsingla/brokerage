@@ -11,21 +11,24 @@ import { RxFontRoman } from 'react-icons/rx';
 import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
-
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
+
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
+
 const columns = [
   { id: 'nature', label: 'Nature', minWidth: 170 },
   { id: 'rate', label: 'Rate', minWidth: 170 },
   { id: 'CalculatedBy', label: 'Calculated By', minWidth: 170 },
 ];
 
-export default function NatureTable({ initialNature }) {
-  const [nature, setNature] = React.useState(initialNature);
+export default function NatureTable() {
+  const [nature, setNature] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [currentRow, setCurrentRow] = React.useState(null);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -35,6 +38,15 @@ export default function NatureTable({ initialNature }) {
     CalculatedBy: '',
   });
   const [open, setOpen] = React.useState(false);
+
+  const [openAlert, setOpenAlert] = React.useState(false);
+  const [DeleteAlert, setDeleteAlert] = React.useState(false);
+
+  React.useEffect(() => {
+    fetch('http://localhost:3001/nature')
+      .then((response) => response.json())
+      .then((data) => (data.Data ? setNature(data.Data) : setNature([])));
+  }, []);
 
   const handleClickOpen = (row) => {
     setCurrentRow(row);
@@ -46,9 +58,15 @@ export default function NatureTable({ initialNature }) {
     setOpen(true);
   };
 
+  const handleCloseAlert = () => {
+    setDeleteAlert(false);
+    setOpenAlert(false);
+  };
+
   const handleClose = () => {
     setOpen(false);
   };
+
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -85,22 +103,21 @@ export default function NatureTable({ initialNature }) {
                 )
             );
             setNature(updatedNature);
-            alert('Deleted successfully');
-          } else {
-            alert('invalid operation');
+            setDeleteAlert(true);
           }
         });
     } catch (error) {
       console.error('Failed to delete entry:', error);
     }
   };
+
   const FetchApi = () => {
     try {
       fetch('http://localhost:3001/nature')
         .then((response) => response.json())
         .then((data) => {
           if (data.response) {
-            alert('Data Updated Sucessfully');
+            setOpenAlert(true);
             setNature(data.Data);
           } else console.log('Failed as a API');
         });
@@ -129,12 +146,10 @@ export default function NatureTable({ initialNature }) {
           if (data.response) {
             FetchApi();
             handleClose();
-          } else {
-            alert('Invalid operation');
           }
         });
     } catch (err) {
-      alert('Failed to update');
+      console.error(err.message);
     }
   };
   return (
@@ -246,6 +261,24 @@ export default function NatureTable({ initialNature }) {
           <Button onClick={handleClickUpdate}>Update</Button>
         </DialogActions>
       </Dialog>
+      <Snackbar
+        open={openAlert}
+        onClose={handleCloseAlert}
+        autoHideDuration={3000}
+      >
+        <Alert variant="filled" severity="success">
+          Update Sucessfully
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        open={DeleteAlert}
+        onClose={handleCloseAlert}
+        autoHideDuration={3000}
+      >
+        <Alert variant="filled" severity="success">
+          Delete Sucessfully
+        </Alert>
+      </Snackbar>
     </>
   );
 }

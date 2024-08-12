@@ -1,38 +1,61 @@
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 export default function Comodity() {
+  const [Check, SetCheck] = useState({
+    comodity: '',
+  });
+  const [AnotherOpen, setAnotherOpen] = useState(false);
+  const [checkValue, setCheckValue] = useState(false);
   const [formData, setFormData] = useState({
     comodity: '',
   });
   const handleChange = (event) => {
     setFormData({ ...formData, [event.target.name]: event.target.value });
   };
+  const handleComodityANotherChange = () => {
+    setAnotherOpen(true);
+    setFormData({ comodity: '' });
+  };
+  useEffect(() => {
+    fetch('http://localhost:3001/comodity')
+      .then((response) => response.json())
+      .then((data) => {
+        SetCheck(data.Data);
+      });
+  }, []);
   const [open, setOpen] = useState(false);
-
   const handleClick = () => {
     setOpen(true);
     setFormData({ comodity: '' });
   };
 
   const handleClose = () => {
+    setAnotherOpen(false);
     setOpen(false);
+    setCheckValue(false);
   };
   function handleApi() {
-    fetch('http://localhost:3001/comodity', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(formData),
-    })
-      .then((response) => response.json())
-      .then((data) => handleClick())
-      .catch((error) => {
-        console.error('Error:', error);
-      });
+    if (formData.comodity === '') {
+      setCheckValue(!checkValue);
+      return;
+    }
+    Check.some((check) => check.comodity.trim() === formData.comodity.trim())
+      ? handleComodityANotherChange()
+      : fetch('http://localhost:3001/comodity', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        })
+          .then((response) => response.json())
+          .then((data) => handleClick())
+          .catch((error) => {
+            console.error('Error:', error);
+          });
   }
   return (
     <>
@@ -53,19 +76,25 @@ export default function Comodity() {
           variant="outlined"
           size="large"
           sx={{ marginLeft: 2, marginTop: 1 }}
-          onClick={handleApi}
+          onClick={() => {
+            handleApi();
+          }}
         >
           Save
         </Button>
       </div>
+      <Snackbar open={open} onClose={handleClose} autoHideDuration={4000}>
+        <Alert severity="success">Insert Sucessfully</Alert>
+      </Snackbar>
       <Snackbar
-        // anchorOrigin={{ vertical, horizontal }}
-        open={open}
+        open={AnotherOpen}
         onClose={handleClose}
-        autoHideDuration={6000}
-        key={'bottom' + 'left'}
+        autoHideDuration={4000}
       >
-        <Alert severity="success">Updated Sucessfully</Alert>
+        <Alert severity="warning">Already Saved</Alert>
+      </Snackbar>
+      <Snackbar open={checkValue} onClose={handleClose} autoHideDuration={4000}>
+        <Alert severity="error">Please enter a value</Alert>
       </Snackbar>
     </>
   );

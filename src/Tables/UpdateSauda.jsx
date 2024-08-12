@@ -2,9 +2,14 @@ import Button from '@mui/material/Button';
 import { useEffect, useState } from 'react';
 import SaudaComponent1 from './UpdateSauda2';
 import { format } from 'date-fns';
-export default function Saudaaaa({ handleClose, FetchData, CurrentDate }) {
+export default function Saudaaaa({
+  handleClose,
+  FetchData,
+  CurrentDate,
+  selectID,
+}) {
   //Allocations
-  const [id, setid] = useState(0);
+  let id = selectID;
   const [info, setinfo] = useState([]);
   const [Comodity, setComodity] = useState([]);
   const [Nature, setnature] = useState([]);
@@ -83,7 +88,6 @@ export default function Saudaaaa({ handleClose, FetchData, CurrentDate }) {
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
-        setid(data.Sauda[data.Sauda.length - 1].id + 1);
         setinfo(data.Ledger);
         setComodity(data.Comodity);
         setnature(data.Nature);
