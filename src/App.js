@@ -7,12 +7,12 @@ import { Navbar } from './MenuBar/Navbar';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
 import Toolbar from '@mui/material/Toolbar';
-import Me from './Home/Something';
-import Info from './Information/Combine';
+import Home from './Home/Home';
+import CombineInfo from './Information/CombineInfo';
 import Sauda from './Sauda/Sauda';
-import LedgerStationGroupTable from './Tables/LedgerTable';
-import FormDialog from './Bill/BackdropGetDate';
-import StickyHeadSaudaTable from './Bill/DTable';
+import LedgerStationGroupTable from './Tables/LedgerStationGroupTable';
+import BackdropGetDate from './Bill/BackdropGetDate';
+import StickyHeadSaudaTable from './Bill/StickyHeadSaudaTable';
 import NatureTable from './Tables/NatureTable';
 import ComodityTable from './Tables/ComodityTable';
 import SaudaTable from './Tables/SaudaTable';
@@ -57,8 +57,8 @@ function App() {
             <Toolbar />
 
             <Routes>
-              <Route path="/" element={<Me />} />
-              <Route path="/Information" element={<Info />} />
+              <Route path="/" element={<Home />} />
+              <Route path="/Information" element={<CombineInfo />} />
               <Route path="/Sauda" element={<Sauda />} />
               <Route
                 path="/LedgerTable"
@@ -70,7 +70,7 @@ function App() {
               <Route
                 path="/Bill"
                 element={
-                  <FormDialog
+                  <BackdropGetDate
                     open={open}
                     handleClose={handleClose}
                     handleData={handleData}

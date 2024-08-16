@@ -16,7 +16,10 @@ import Box from '@mui/material/Box';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import dayjs from 'dayjs';
 
-export default function FormDialog({
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
+
+export default function BackdropGetDate({
   open,
   handleClose,
   handleData,
@@ -36,6 +39,15 @@ export default function FormDialog({
 
   const handleDateChange = (name, date) => {
     setformdata({ ...formdata, [name]: date });
+  };
+  //Alerts ^-^
+
+  const [AnotherOpen, setAnotherOpen] = useState(false);
+  const [errorOpen, setErrorOpen] = useState(false);
+
+  const handleClose1 = () => {
+    setAnotherOpen(false);
+    setErrorOpen(false);
   };
 
   //Handling Dates
@@ -62,66 +74,86 @@ export default function FormDialog({
         ? format(formdata.end_date.$d, 'yyyy-MM-dd')
         : null,
     };
-    fetch('http://localhost:3001/saudaAll', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(formattedData),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        if (data.response) {
-          handleData(data.Sauda);
-          handleSearch(formattedData);
-          handleClose();
-          navigate('/Bill/saudaData');
-        } else {
-          alert('Data not found Please retry...');
-        }
-      });
+    formattedData.name !== '' &&
+    formattedData.name !== null &&
+    formattedData.name !== undefined
+      ? fetch('http://localhost:3001/saudaAll', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formattedData),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            console.log(data);
+            if (data.response) {
+              handleData(data.Sauda);
+              handleSearch(formattedData);
+              handleClose();
+              navigate('/Bill/saudaData');
+            } else {
+              setAnotherOpen(true);
+            }
+          })
+      : setErrorOpen(true);
   };
   return (
-    <Dialog open={open} onClose={handleClose}>
-      <DialogTitle>Billing</DialogTitle>
-      <DialogContent>
-        <DialogContentText>
-          Enter the Ledger and Date from this to this
-        </DialogContentText>
-        <TextField
-          autoFocus
-          required
-          margin="dense"
-          id="name"
-          name="name"
-          label="Ledger"
-          type="text"
-          fullWidth
-          variant="standard"
-          onChange={handleChange}
-        />
-        <Box>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DemoContainer components={['DatePicker']}>
-              <DatePicker
-                label="From Date"
-                value={formdata.start_date}
-                onChange={(date) => handleDateChange('start_date', date)}
-              />
-              <DatePicker
-                label="To Date"
-                value={formdata.end_date}
-                onChange={(date) => handleDateChange('end_date', date)}
-              />
-            </DemoContainer>
-          </LocalizationProvider>
-        </Box>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={handleClose}>Cancel</Button>
-        <Button onClick={handleCheck}>Check</Button>
-      </DialogActions>
-    </Dialog>
+    <>
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>Billing</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Enter the Ledger and Date from this to this
+          </DialogContentText>
+          <TextField
+            autoFocus
+            required
+            margin="dense"
+            id="name"
+            name="name"
+            label="Ledger"
+            type="text"
+            fullWidth
+            variant="standard"
+            onChange={handleChange}
+          />
+          <Box>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DemoContainer components={['DatePicker']}>
+                <DatePicker
+                  label="From Date"
+                  value={formdata.start_date}
+                  onChange={(date) => handleDateChange('start_date', date)}
+                />
+                <DatePicker
+                  label="To Date"
+                  value={formdata.end_date}
+                  onChange={(date) => handleDateChange('end_date', date)}
+                />
+              </DemoContainer>
+            </LocalizationProvider>
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleCheck}>Check</Button>
+        </DialogActions>
+      </Dialog>
+      <Snackbar
+        open={AnotherOpen}
+        onClose={handleClose1}
+        autoHideDuration={4000}
+      >
+        <Alert severity="warning" variant="filled">
+          Not Found
+        </Alert>
+      </Snackbar>
+      <Snackbar open={errorOpen} onClose={handleClose1} autoHideDuration={4000}>
+        <Alert severity="error" variant="filled">
+          Please enter some value ^-^
+        </Alert>
+      </Snackbar>
+    </>
   );
 }

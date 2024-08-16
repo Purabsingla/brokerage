@@ -3,19 +3,13 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { ThemeProvider } from '@material-tailwind/react';
-import { BrowserRouter } from 'react-router-dom';
-import { NextUIProvider } from '@nextui-org/react';
+import { HashRouter } from 'react-router-dom';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <ThemeProvider>
-      <BrowserRouter>
-        <NextUIProvider>
-          <App />
-        </NextUIProvider>
-      </BrowserRouter>
-    </ThemeProvider>
+    <HashRouter>
+      <App />
+    </HashRouter>
   </React.StrictMode>
 );
 

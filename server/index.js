@@ -7,10 +7,10 @@ const router = require('./Router/Router');
 const cors = require('cors');
 app.use(cors());
 const port = 3001;
+// app.get('*', (req, res) => {
+//   res.sendFile(path.join(__dirname, './build/index.html'));
+// });
 app.use('/', router);
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'build', 'index.html'));
-});
 app.listen(port, (error) => {
   if (error) {
     console.log(`Error Occur of type`, error);

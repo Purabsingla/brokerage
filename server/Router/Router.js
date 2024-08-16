@@ -10,6 +10,7 @@ router.get('/ledger', async (req, res) => {
   try {
     const query = 'SELECT * FROM LedgerInfo';
     const rows = await show.showdata(query, []);
+    console.log(rows);
     res.send({
       status: 200,
       Data: rows,
@@ -138,7 +139,6 @@ router.post('/saudabydate', async (req, res) => {
     const getData = req.body;
     console.log(getData);
     const query = `SELECT * FROM sauda WHERE date BETWEEN '${getData.start_date}' AND '${getData.end_date}'`;
-    console.log(query);
     const saudaa = await sauda.fetchdata(query, []);
     console.log('data is comming from Sauda');
     if (saudaa.length > 0) {
