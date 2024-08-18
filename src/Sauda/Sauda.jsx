@@ -94,11 +94,8 @@ export default function Sauda() {
     fetch('http://localhost:3001/all')
       .then((response) => response.json())
       .then((data) => {
-        console.log(data.Sauda);
         setid(
-          data.Sauda !== undefined
-            ? data.Sauda[data.Sauda.length - 1].id + 1
-            : 1
+          data.Sauda.length !== 0 ? data.Sauda[data.Sauda.length - 1].id + 1 : 1
         );
         setinfo(data.Ledger);
         setComodity(data.Comodity);
@@ -247,7 +244,7 @@ export default function Sauda() {
   };
   return (
     <>
-      <h1 className="text-5xl font-semibold font-PlaywriteITModerna pt-4">
+      <h1 className="text-5xl font-semibold font-PlaywriteITModerna pt-4 flex justify-center">
         Sauda Details
       </h1>
       <SaudaComponent

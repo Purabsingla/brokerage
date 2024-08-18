@@ -59,10 +59,10 @@ export default function Comodity() {
   }
   return (
     <>
-      <h1 className="text-5xl font-semibold font-PlaywriteITModerna pt-4">
+      <h1 className="text-5xl font-semibold font-PlaywriteITModerna pt-4 flex justify-center">
         Comodity
       </h1>
-      <div className="pt-4 mb-10">
+      <div className="pt-4 mb-10 flex justify-center">
         <TextField
           id="outlined-basic"
           label="Comodity"

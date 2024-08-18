@@ -45,7 +45,7 @@ export default function SaudaComponent({
           type="number"
           variant="outlined"
           value={id}
-          sx={{ width: 400, margin: 2 }}
+          sx={{ width: 400, marginY: 2, marginLeft: 13 }}
         />
         <Autocomplete
           disablePortal
@@ -89,7 +89,7 @@ export default function SaudaComponent({
           variant="outlined"
           type="number"
           value={Rates.buyerRate}
-          sx={{ width: 400, margin: 2 }}
+          sx={{ width: 400, margin: 2, marginLeft: 13 }}
           onChange={handleBuyerRateChange}
         />
         <Autocomplete
@@ -141,7 +141,7 @@ export default function SaudaComponent({
           label="Rate"
           variant="outlined"
           type="number"
-          sx={{ width: 400, margin: 2 }}
+          sx={{ width: 400, margin: 2, marginLeft: 13 }}
           value={Rates.sellerRate}
           onChange={handleSellerRateChange}
         />
@@ -184,7 +184,7 @@ export default function SaudaComponent({
           label="Weigth"
           variant="outlined"
           value={weigth}
-          sx={{ width: 400, margin: 2 }}
+          sx={{ width: 400, marginY: 2, marginLeft: 13 }}
           onChange={handleWeightChange}
         />
       </div>

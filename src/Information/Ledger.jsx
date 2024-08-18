@@ -70,7 +70,7 @@ export default function Ledger() {
   }, []);
   return (
     <>
-      <h1 className="text-5xl font-semibold font-PlaywriteITModerna pt-4">
+      <h1 className="text-5xl font-semibold font-PlaywriteITModerna pt-4 flex justify-center">
         Ledger
       </h1>
       <div className="p-4 flex flex-col justify-center items-center">
